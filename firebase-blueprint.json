@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Trade": {
+      "title": "Trade",
+      "description": "A record of a buy/sell operation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "symbol": { "type": "string" },
+        "type": { "type": "string", "enum": ["BUY", "SELL"] },
+        "price": { "type": "number" },
+        "amount": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["OPEN", "CLOSED"] },
+        "profit": { "type": "number" },
+        "strategy": { "type": "string" },
+        "pnl": { "type": "number" }
+      },
+      "required": ["symbol", "type", "price", "amount", "timestamp", "status"]
+    },
+    "BotConfig": {
+      "title": "Bot Configuration",
+      "description": "Settings for the trading bot.",
+      "type": "object",
+      "properties": {
+        "isRunning": { "type": "boolean" },
+        "strategy": { "type": "string" },
+        "baseCurrency": { "type": "string" },
+        "initialBalance": { "type": "number" },
+        "currentBalance": { "type": "number" },
+        "stopLossPct": { "type": "number" },
+        "takeProfitPct": { "type": "number" },
+        "riskPerTradePct": { "type": "number" },
+        "maxDailyLoss": { "type": "number" }
+      }
+    },
+    "Log": {
+      "title": "Log Entry",
+      "description": "System log message.",
+      "type": "object",
+      "properties": {
+        "timestamp": { "type": "string", "format": "date-time" },
+        "level": { "type": "string", "enum": ["INFO", "WARN", "ERROR"] },
+        "message": { "type": "string" },
+        "source": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/trades": {
+      "schema": "Trade",
+      "description": "Collection of all trade records."
+    },
+    "/config/bot": {
+      "schema": "BotConfig",
+      "description": "Singleton configuration for the bot."
+    },
+    "/logs": {
+      "schema": "Log",
+      "description": "Activity logs."
+    }
+  }
+}

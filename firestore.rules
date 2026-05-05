@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Validation helpers
+    function isValidTrade(data) {
+      return data.symbol is string && data.symbol.size() < 20
+          && data.type in ['BUY', 'SELL']
+          && data.price > 0
+          && data.amount > 0
+          && data.status in ['OPEN', 'CLOSED'];
+    }
+
+    // Trades collection
+    match /trades/{tradeId} {
+      allow list: if isSignedIn(); // In a real app, restrict to owner's trades
+      allow get: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidTrade(request.resource.data);
+      allow delete: if false; // Audit trail
+    }
+
+    // Config
+    match /config/bot {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // Logs
+    match /logs/{logId} {
+      allow list, get: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if false;
+    }
+  }
+}

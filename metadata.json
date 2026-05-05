@@ -1,0 +1,6 @@
+{
+  "name": "Sentinel AI Trader",
+  "description": "A production-grade AI trading bot runner with real-time dashboard monitoring, technical analysis, and Gemini-powered sentiment filtering.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
